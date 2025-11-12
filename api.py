@@ -31,7 +31,7 @@ class QueryModel(BaseModel):
 async def ingest_file(file: UploadFile = File(...)):
     # save temp
     contents = await file.read()
-    tmp_path = f"/tmp/{file.filename}"
+    tmp_path = r"C:\Users\User\Desktop\Capstone_project_Finance_audit_rag\tests\sample_sox.txt"
     with open(tmp_path, "wb") as f:
         f.write(contents)
     # reuse ingest pipeline from ingest.py but simplified
@@ -66,4 +66,4 @@ async def update_sec(text: str = Form(...)):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="localhost", port=8000)

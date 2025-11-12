@@ -1,21 +1,30 @@
-# memory_and_tools.py
+import os
 import json
 from typing import Dict, Any
-from langchain.memory import BaseMemory
-from langchain.schema import messages_from_dict, messages_to_dict
+from datetime import datetime
+from pathlib import Path
+
+# Dummy base class so we don't depend on langchain.memory
+class BaseMemory:
+    """Lightweight BaseMemory stub for compatibility."""
+    def load_memory_variables(self, inputs: Dict[str, Any]):
+        raise NotImplementedError
+
+    def save_context(self, inputs: Dict[str, Any], outputs: Dict[str, Any]):
+        raise NotImplementedError
+
 
 class SOXMemory(BaseMemory):
     """
-    Simple custom memory that extracts 'SOX' occurrences into a dict:
-    { 'controls': {control_name: details}, 'last_update': ts }
-    and stores to memory.json
+    Custom SOX Memory that extracts 'SOX' or 'control' mentions
+    and persists them to a JSON file.
     """
     def __init__(self, path="data/sox_memory.json"):
-        self.path = path
-        try:
+        self.path = Path(path)
+        if self.path.exists():
             with open(self.path, "r") as f:
                 self.mem = json.load(f)
-        except FileNotFoundError:
+        else:
             self.mem = {"controls": {}, "metadata": {}}
 
     @property
@@ -26,39 +35,43 @@ class SOXMemory(BaseMemory):
         return {"sox_memory": self.mem}
 
     def save_context(self, inputs: Dict[str, Any], outputs: Dict[str, Any]):
-        # naive extraction: look for lines containing "SOX" or "control", adjust with regex/NLP later
         text = inputs.get("input", "") or inputs.get("question", "")
-        # simple heuristic:
         if "SOX" in text or "control" in text.lower():
-            # store snippet keyed by a simple incremental id / short hash
-            key = f"item_{len(self.mem['controls'])+1}"
+            key = f"item_{len(self.mem['controls']) + 1}"
             self.mem["controls"][key] = {"snippet": text}
-            self.mem["metadata"]["last_update"] = __import__("datetime").datetime.utcnow().isoformat()
+            self.mem["metadata"]["last_update"] = datetime.utcnow().isoformat()
+
+            self.path.parent.mkdir(parents=True, exist_ok=True)
             with open(self.path, "w") as f:
                 json.dump(self.mem, f, indent=2)
 
-# Tool for mock SEC updates
-def sec_update_tool(store_paths: Dict[str,str], update_text: str):
+
+def sec_update_tool(store_paths: Dict[str, str], update_text: str):
     """
-    Simulate public SEC snippet update by adding a document to Chroma store (public mock).
-    store_paths: dict with 'chroma_dir'
+    Simulate adding a new SEC update snippet into Chroma store.
     """
-    from langchain.document_loaders import TextLoader
-    from langchain.text_splitter import RecursiveCharacterTextSplitter
-    from langchain.embeddings import OpenAIEmbeddings
-    from langchain.vectorstores import Chroma
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+    from langchain_openai import AzureOpenAIEmbeddings
+    from langchain_community.vectorstores import Chroma
+    from langchain_core.documents import Document
 
     chroma_dir = store_paths["chroma_dir"]
-    ensure = __import__('pathlib').Path(chroma_dir).mkdir(parents=True, exist_ok=True)
+    Path(chroma_dir).mkdir(parents=True, exist_ok=True)
 
-    # create a temporary doc object
-    from langchain.schema import Document
-    doc = Document(page_content=update_text, metadata={"source": "mock_SEC_update"})
+    # Split into chunks
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    docs = splitter.split_documents([doc])
+    docs = splitter.split_documents([Document(page_content=update_text, metadata={"source": "mock_SEC_update"})])
 
-    embeddings = OpenAIEmbeddings()
+    # Use Azure embedding model
+    embeddings = AzureOpenAIEmbeddings(
+        model=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME_EMBED"),
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+    )
+
     chroma = Chroma(persist_directory=chroma_dir, embedding_function=embeddings)
     chroma.add_documents(docs)
     chroma.persist()
+
     return {"status": "ok", "added_chunks": len(docs)}
