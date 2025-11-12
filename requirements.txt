@@ -1,0 +1,22 @@
+# Core LangChain ecosystem
+langchain
+langchain-community
+langchain-openai
+chromadb
+faiss-cpu
+
+# API + Web
+fastapi
+uvicorn
+streamlit
+pydantic
+
+# Utilities
+redis
+pinecone-client
+pandas
+requests
+python-dotenv
+
+# Optional for local testing
+tiktoken

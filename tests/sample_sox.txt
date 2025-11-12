@@ -1,0 +1,52 @@
+Title: SOX Compliance Summary — FY2024 Audit
+
+1. Overview
+The Sarbanes-Oxley Act (SOX) requires management to assess and report on the effectiveness of internal controls over financial reporting (ICFR). 
+Our audit focused on key SOX sections: 302 (Disclosure Controls) and 404 (Management Assessment of Internal Controls).
+
+2. Key SOX Controls Tested
+- **Revenue Recognition Control (RRC-01)**: Validates that all revenue transactions are recorded in accordance with GAAP and that cut-off testing ensures completeness and accuracy.
+- **Access Management Control (AMC-02)**: Reviews user access rights to financial systems. SOX requires that access to critical financial data be limited to authorized personnel.
+- **Change Management Control (CMC-03)**: Ensures that system changes to the general ledger and sub-ledger environments are tested, approved, and documented.
+
+3. Control Testing Results
+- RRC-01: Operated effectively with no exceptions.
+- AMC-02: One minor deficiency related to terminated user access not being revoked timely.
+- CMC-03: No exceptions noted.
+
+4. Remediation Plan
+Management will enhance the user de-provisioning process to ensure access removal within 48 hours of employee termination.
+
+5. SEC Guidance Reference
+Per SEC Release No. 33-8238, management is required to maintain evidence supporting its assessment of the effectiveness of internal control over financial reporting.
+The SEC also requires timely remediation of any identified material weaknesses before the next annual filing.
+
+6. IT General Controls (ITGCs)
+The ITGCs reviewed include:
+- Logical access controls
+- Change management
+- Computer operations
+- Backup and recovery procedures
+
+7. Entity-Level Controls
+These include:
+- Control environment and governance
+- Risk assessment process
+- Information and communication systems
+- Monitoring activities
+
+8. SOX 302 Certification
+The CEO and CFO have certified that:
+- They have reviewed the financial statements.
+- There are no untrue statements or omissions of material fact.
+- They are responsible for establishing and maintaining disclosure controls and procedures.
+
+9. Auditor Conclusion
+Based on testing performed, internal controls are designed and operating effectively. The audit team concludes that the organization is in compliance with SOX Sections 302 and 404 for FY2024.
+
+10. Notes for Future Filings
+- Continuous monitoring of segregation of duties (SoD) conflicts.
+- Implementation of automated workflows for control attestations.
+- Review new SEC guidance regarding ESG-related disclosures under SOX frameworks.
+
+End of Report.

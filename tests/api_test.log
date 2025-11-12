@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "C:\Users\User\Desktop\Capstone_project_Finance_audit_rag\api.py", line 6, in <module>
+    from federated_rag import load_faiss, load_chroma, make_ensemble_retriever, make_retrieval_chain
+  File "C:\Users\User\Desktop\Capstone_project_Finance_audit_rag\federated_rag.py", line 3, in <module>
+    from langchain.embeddings import OpenAIEmbeddings
+ImportError: cannot import name 'OpenAIEmbeddings' from 'langchain.embeddings' (C:\Users\User\Desktop\Capstone_project_Finance_audit_rag\.venv\Lib\site-packages\langchain\embeddings\__init__.py)
